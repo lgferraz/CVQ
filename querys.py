@@ -1,5 +1,14 @@
 #querys
-import queryfunc
+from queryfunc import *
+import re
+
+baseorig = "cfg.json"
+orig = str(open(baseorig, "r").read())
+
+
+pastaprojetos = re.search("pastaprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")
+nomeprojetos = re.search("nomeprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")
+nomebanco = re.search("banco:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")  
 
 queryprojetos = '''
 CREATE TABLE PROJETOS (
@@ -31,7 +40,7 @@ def criarbanco(banco):
     executaquery(banco, queryprojetos)
     executaquery(banco, queryalteracoes)
 
-def insertcriacao(nomeprojeto, pastaprojeto, aquivo_base, banco = nomebanco):
+def insertcriacao(nomeprojeto, pastaprojeto, arquivobase, banco = nomebanco):
     insertcriacao = '''
     INSERT INTO PROJETOS (NOME_PROJETO, PASTA_PROJETO, ARQUIVO_BASE, DATA_CRIACAO, VERSAO_ATUAL)
     VALUES('{}', '{}', '{}', DATETIME(), 0);

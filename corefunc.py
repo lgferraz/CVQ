@@ -1,6 +1,7 @@
 import os
 import shutil
-import querys
+from querys import *
+from queryfunc import *
 
 selectprojeto = '''
 SELECT
@@ -41,7 +42,7 @@ def iniciarfit(nome, pasta):
         try:
             os.mkdir(pasta+nome, 777)
             criarbanco(nome, pasta+nome)
-        except e:
+        except Exception as e:
             print(e)
 
 def iniciarproj(nomeproj, nomearquivo, pasta):
@@ -49,11 +50,11 @@ def iniciarproj(nomeproj, nomearquivo, pasta):
             pasta = pasta+"/"+nomeproj
             os.mkdir(pasta, 777)
             shutil.copy(nomearquivo, pasta)
-            insertcriacao(nomeprojeto, pasta, nomearquivo)
-        except e:
+            insertcriacao(nomeproj, pasta, nomearquivo)
+        except Exception as e:
             print(e)
 
-def alteracao(idprojeto, nomearquivo, banco = nomebanco, linhasalteradas = 'NULL', observacoes = 'NULL'):
+def alteracao(idprojeto, nomearquivo, banco, linhasalteradas = 'NULL', observacoes = 'NULL'):
     projeto = select(banco, selectprojeto.format(idprojeto))
     versaoantiga = str(projeto["VERSAO_ATUAL"])
     updateprojetosvd(idprojeto)

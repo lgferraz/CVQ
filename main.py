@@ -1,4 +1,13 @@
-import corefunc
+def configinicial(nomeprojetos, pastaprojetos):
+    banco = pastaprojetos+"/"+nomeprojetos+".db"
+    arquivo = '''
+    pastaprojetos:'''+pastaprojetos+''',
+    nomeprojetos:'''+nomeprojetos+''',
+    banco:'''+banco+'''
+    '''
+    config = open("cfg.json", "w+")
+    config.write(arquivo)
+    config.close()
 
 
 #variaveis de teste
@@ -10,6 +19,14 @@ nomeproj = "testin3"
 nomearquivo = "queryteste.txt"
 idprojeto = 1
 
+
+
+from corefunc import *
+iniciarproj(nomeproj, nomearquivo, pastaprojetos)
+
+
+    
+#configinicial(nomeprojetos, pastaprojetos)
 
     
     
