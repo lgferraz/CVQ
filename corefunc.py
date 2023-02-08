@@ -1,8 +1,15 @@
 import os
 import shutil
 from querys import *
-from queryfunc import *
+import re
 
+baseorig = "cfg.cvq"
+orig = str(open(baseorig, "r").read())
+
+pastaprojetos = re.search("pastaprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")[0]
+nomeprojetos = re.search("nomeprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")[0]
+nomebanco = re.search("banco:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")[0]
+     
 selectprojeto = '''
 SELECT
     *
@@ -25,37 +32,24 @@ SELECT
 FROM PROJETOS
 '''
 
-def configinicial(nomeprojetos, pastaprojetos):
-    banco = pastaprojetos+"/"+nomeprojetos+".db"
-    arquivo = '''
-    {
-    'pastaprojetos':'{}',
-    'nomeprojetos':'{}',
-    'banco':'{}'
-    }
-    '''.format(nomeprojetos, pastaprojetos, banco)
-    config = open("cfg.json", "w+")
-    config.write(arquivo)
-    config.close()
-
-def iniciarfit(nome, pasta):
+def iniciarfit(nomeprojetos = nomeprojetos, pastaprojetos = pastaprojetos, nomebanco = nomebanco):
         try:
-            os.mkdir(pasta+nome, 777)
-            criarbanco(nome, pasta+nome)
+            os.mkdir(pastaprojetos, 777)
+            criarbanco(nomebanco)
         except Exception as e:
             print(e)
 
-def iniciarproj(nomeproj, nomearquivo, pasta):
+def iniciarproj(nomeproj, nomearquivo, pastaprojetos = pastaprojetos):
         try:
-            pasta = pasta+"/"+nomeproj
-            os.mkdir(pasta, 777)
-            shutil.copy(nomearquivo, pasta)
-            insertcriacao(nomeproj, pasta, nomearquivo)
+            pastaprojetos = pastaprojetos+"/"+nomeproj
+            os.mkdir(pastaprojetos, 777)
+            shutil.copy(nomearquivo, pastaprojetos)
+            insertcriacao(nomeproj, pastaprojetos, nomearquivo)
         except Exception as e:
             print(e)
 
-def alteracao(idprojeto, nomearquivo, banco, linhasalteradas = 'NULL', observacoes = 'NULL'):
-    projeto = select(banco, selectprojeto.format(idprojeto))
+def alteracao(idprojeto, nomearquivo, linhasalteradas = 'NULL', observacoes = 'NULL', nomebanco = nomebanco):
+    projeto = select(nomebanco, selectprojeto.format(idprojeto))
     versaoantiga = str(projeto["VERSAO_ATUAL"])
     updateprojetosvd(idprojeto)
     versao = str(projeto["VERSAO_ATUAL"])

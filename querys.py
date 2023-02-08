@@ -1,14 +1,14 @@
 #querys
-from queryfunc import *
+import sqlite3
+from sqlite3 import Error
 import re
 
-baseorig = "cfg.json"
+baseorig = "cfg.cvq"
 orig = str(open(baseorig, "r").read())
 
-
-pastaprojetos = re.search("pastaprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")
-nomeprojetos = re.search("nomeprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")
-nomebanco = re.search("banco:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")  
+pastaprojetos = re.search("pastaprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")[0]
+nomeprojetos = re.search("nomeprojetos:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")[0]
+nomebanco = re.search("banco:.+", orig).group(0).split(":")[1].replace(" ", "").split(",")[0]
 
 queryprojetos = '''
 CREATE TABLE PROJETOS (
@@ -35,6 +35,35 @@ CREATE TABLE ALTERACOES (
     VERSAO INT
     );
 '''
+
+
+def executaquery(banco, query):
+    conn = None;
+    try:
+        conn = sqlite3.connect(banco)
+        cursor = conn.cursor()
+        conn.execute(query)
+        conn.commit()
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+
+def select(banco, query):
+    result = {}
+    conn = sqlite3.connect(banco)
+    cursor = conn.cursor()
+    cursor.execute(query)
+    linhas = cursor.fetchall()
+    for linha in linhas:
+        indexlinha = linhas.index(linha)
+        for coluna in range(0, len(linha)):
+            nomecoluna = cursor.description[coluna][0]
+            conteudocoluna = linha[coluna]
+            result[nomecoluna] = conteudocoluna
+    conn.close()
+    return result
 
 def criarbanco(banco):
     executaquery(banco, queryprojetos)

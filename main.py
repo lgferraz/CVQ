@@ -13,23 +13,19 @@ def configinicial(nomeprojetos, pastaprojetos):
 #variaveis de teste
 nomebanco = "./teste3/teste3.db"
 nomeprojetos = "teste3"
-pastaprojetos = "./"
+pastaprojetos = "."
 pastaprojeto = "./teste3"
 nomeproj = "testin3"
 nomearquivo = "queryteste.txt"
 idprojeto = 1
 
-
-
-from corefunc import *
-iniciarproj(nomeproj, nomearquivo, pastaprojetos)
-
-
-    
-#configinicial(nomeprojetos, pastaprojetos)
-
-    
+try:
+    from corefunc import *
+except Exception as e:
+    from configfunc import configinicial
+    configinicial(nomeprojetos, pastaprojetos)
+  
     
 #iniciarfit(nomeprojetos, pastaprojetos)
-#iniciarproj(nomeproj, nomearquivo, pastaprojeto)
-#alteracao(idprojeto)
+#iniciarproj(nomeproj, nomearquivo)
+alteracao(idprojeto, nomearquivo)
