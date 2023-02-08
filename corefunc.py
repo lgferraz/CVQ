@@ -1,7 +1,9 @@
+import re
 import os
 import shutil
+import difflib
 from querys import *
-import re
+
 
 baseorig = "cfg.cvq"
 orig = str(open(baseorig, "r").read())
@@ -48,14 +50,22 @@ def iniciarproj(nomeproj, nomearquivo, pastaprojetos = pastaprojetos):
         except Exception as e:
             print(e)
 
-def alteracao(idprojeto, nomearquivo, linhasalteradas = 'NULL', observacoes = 'NULL', nomebanco = nomebanco):
+def linhasalteradas(arquivobase, arquivonovo):
+    arquivobase = str(open(arquivobase, "r").read()).split("\n")
+    arquivonovo = str(open(arquivonovo, "r").read()).split("\n")
+    html_diff = difflib.HtmlDiff().make_file(arquivobase, arquivonovo)
+    return html_diff
+
+def alteracao(idprojeto, nomearquivo, observacoes = 'NULL', nomebanco = nomebanco):
     projeto = select(nomebanco, selectprojeto.format(idprojeto))
     versaoantiga = str(projeto["VERSAO_ATUAL"])
+    arquivoantigo = projeto["PASTA_PROJETO"]+"/"+projeto["ARQUIVO_ATUAL"]
+    linhasalt = linhasalteradas(arquivoantigo, nomearquivo)
     updateprojetosvd(idprojeto)
     versao = str(projeto["VERSAO_ATUAL"])
     nomeext = nomearquivo.split(".")
     nomenovo = nomeext[0]+" "+versao+"."+nomeext[1]
-    insertalt(idprojeto, versaoantiga, nomenovo, linhasalteradas, observacoes)
+    insertalt(idprojeto, versaoantiga, nomenovo, linhasalt, observacoes)
     updateprojetosa(idprojeto, nomenovo)
     shutil.copy(nomearquivo, projeto["PASTA_PROJETO"]+"/"+nomenovo)
 

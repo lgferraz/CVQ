@@ -71,10 +71,10 @@ def criarbanco(banco):
 
 def insertcriacao(nomeprojeto, pastaprojeto, arquivobase, banco = nomebanco):
     insertcriacao = '''
-    INSERT INTO PROJETOS (NOME_PROJETO, PASTA_PROJETO, ARQUIVO_BASE, DATA_CRIACAO, VERSAO_ATUAL)
-    VALUES('{}', '{}', '{}', DATETIME(), 0);
+    INSERT INTO PROJETOS (NOME_PROJETO, PASTA_PROJETO, ARQUIVO_ATUAL, ARQUIVO_BASE, DATA_CRIACAO, VERSAO_ATUAL)
+    VALUES('{}', '{}', '{}', '{}', DATETIME(), 0);
     '''
-    query = insertcriacao.format(nomeprojeto, pastaprojeto, arquivobase)
+    query = insertcriacao.format(nomeprojeto, pastaprojeto, arquivobase, arquivobase)
     executaquery(banco, query)
 
 
