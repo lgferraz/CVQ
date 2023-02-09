@@ -9,3 +9,4 @@ def configinicial(nomeprojetos, pastaprojetos):
     config = open("cfg.cvq", "w+")
     config.write(arquivo)
     config.close()
+    print("Arquivo de configuração criado com os seguintes parâmetros\n", arquivo)

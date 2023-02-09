@@ -50,6 +50,31 @@ def iniciarproj(nomeproj, nomearquivo, pastaprojetos = pastaprojetos):
         except Exception as e:
             print(e)
 
+def listarproj(quantidade = 0, nomebanco = nomebanco):
+    projetos = select(nomebanco, selecttudo)
+    if quantidade > 0:
+        for i in range(quantidade):
+            print("-------")
+            print("[] Id: "+str(projetos[i]["ID_PROJETO"]))
+            print("[] Nome: "+projetos[i]["NOME_PROJETO"])
+            print("[] Pasta: "+projetos[i]["PASTA_PROJETO"])
+            print("[] Arquivo atual: "+projetos[i]["ARQUIVO_ATUAL"])
+            print("[] Arquivo base: "+projetos[i]["ARQUIVO_BASE"])
+            print("[] Data de criação: "+projetos[i]["DATA_CRIACAO"])
+            print("[] Data ultima alteração: "+str(projetos[i]["DATA_ULTIMA_ALTERACAO"]))
+            print("[] Versão atual: "+str(projetos[i]["VERSAO_ATUAL"]))
+    else: 
+        for projeto in projetos:
+            print("-------")
+            print("[] Id: "+str(projeto["ID_PROJETO"]))
+            print("[] Nome: "+projeto["NOME_PROJETO"])
+            print("[] Pasta: "+projeto["PASTA_PROJETO"])
+            print("[] Arquivo atual: "+projeto["ARQUIVO_ATUAL"])
+            print("[] Arquivo base: "+projeto["ARQUIVO_BASE"])
+            print("[] Data de criação: "+projeto["DATA_CRIACAO"])
+            print("[] Data ultima alteração: "+str(projeto["DATA_ULTIMA_ALTERACAO"]))
+            print("[] Versão atual: "+str(projeto["VERSAO_ATUAL"]))
+
 def linhasalteradas(arquivobase, arquivonovo):
     arquivobase = str(open(arquivobase, "r").read()).split("\n")
     arquivonovo = str(open(arquivonovo, "r").read()).split("\n")
@@ -57,7 +82,7 @@ def linhasalteradas(arquivobase, arquivonovo):
     return html_diff
 
 def alteracao(idprojeto, nomearquivo, observacoes = 'NULL', nomebanco = nomebanco):
-    projeto = select(nomebanco, selectprojeto.format(idprojeto))
+    projeto = select(nomebanco, selectprojeto.format(idprojeto))[0]
     versaoantiga = str(projeto["VERSAO_ATUAL"])
     arquivoantigo = projeto["PASTA_PROJETO"]+"/"+projeto["ARQUIVO_ATUAL"]
     linhasalt = linhasalteradas(arquivoantigo, nomearquivo)

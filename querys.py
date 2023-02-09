@@ -35,7 +35,25 @@ CREATE TABLE ALTERACOES (
     VERSAO INT
     );
 '''
+selecttudo = '''
+SELECT
+    *
+FROM PROJETOS
+'''
 
+def testarconect(banco = nomebanco):
+    conn = None;
+    try:
+        conn = sqlite3.connect(banco)
+        cursor = conn.cursor()
+        conn.execute(selecttudo)
+        conn.commit()
+    except Error as e:
+        return False
+    finally:
+        if conn:
+            conn.close()
+            return True
 
 def executaquery(banco, query):
     conn = None;
@@ -51,19 +69,21 @@ def executaquery(banco, query):
             conn.close()
 
 def select(banco, query):
-    result = {}
+    total = []
     conn = sqlite3.connect(banco)
     cursor = conn.cursor()
     cursor.execute(query)
     linhas = cursor.fetchall()
     for linha in linhas:
+        result = {}
         indexlinha = linhas.index(linha)
         for coluna in range(0, len(linha)):
             nomecoluna = cursor.description[coluna][0]
             conteudocoluna = linha[coluna]
             result[nomecoluna] = conteudocoluna
+        total.append(result)
     conn.close()
-    return result
+    return total
 
 def criarbanco(banco):
     executaquery(banco, queryprojetos)
